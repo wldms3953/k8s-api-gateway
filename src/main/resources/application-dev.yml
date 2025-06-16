@@ -16,6 +16,8 @@ spring:
               uri: http://k8s-backend-alim-service:8080
               predicates:
                 - Path=/api/alim/**
+              filters:
+                - RewritePath=/api/alim/(?<segment>.*), /backend/alim/${segment}
 
             - id: backend-post
               uri: http://k8s-backend-post-service:8080
