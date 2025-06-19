@@ -8,6 +8,7 @@ import com.welab.k8s_api_gateway.common.exception.NotFound;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,7 +54,14 @@ public class ApiCommonAdvice {
                 "NoResource",
                 "리소스를 찾을 수 없습니다.");
     }
-
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({InsufficientAuthenticationException.class})
+    public ApiResponseDto<String> handleInsufficientAuthenticationException(
+            InsufficientAuthenticationException e) {
+        return ApiResponseDto.createError(
+                "Unauthenticated",
+                "인증되지 않았습니다.");
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ApiResponseDto<ParameterErrorDto.FieldList> handleArgumentNotValidException(MethodArgumentNotValidException e) {
